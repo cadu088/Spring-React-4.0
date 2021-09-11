@@ -3,8 +3,12 @@ import { Salepage } from "types/sale";
 import { BASE_URL } from "utils/requests";
 import { format } from 'date-fns';
 import { useEffect, useState } from "react";
+import Pagination from "components/Pagination";
 
 const table = () => {
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [activePage, setActivePage] = useState(0);
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [page, setPage] = useState<Salepage>({
@@ -17,16 +21,20 @@ const table = () => {
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-        axios.get(BASE_URL + "/sales?page=0&size=20&sort=date,desc")
+        axios.get(BASE_URL + "/sales?page="+ activePage +"&size=20&sort=date,desc")
             .then(response => {
                 setPage(response.data);
             });
-    }, [])
+    }, [activePage])
 
-
+    const changePage = (index: number) =>{
+        setActivePage(index);
+    }
 
 
     return (
+        <>
+        <Pagination page={page} onPageChance={changePage}/>
         <div className="table-responsive">
             <table className="table table-striped table-sm">
                 <thead>
@@ -51,6 +59,7 @@ const table = () => {
                 </tbody>
             </table>
         </div>
+        </>
     );
 }
 
